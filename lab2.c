@@ -130,8 +130,7 @@ void main(void)
             /***********MODE 1***********/
             if (mode == 1) //enact mode 1 for 8 turns
             {
-                printf("Mode 1:\r\n\rA random sequence will light LEDs. Match the sequence by
-                    \r\n\rpressing the corresponding pushbuttons\r\n\rHigh Score Wins!");
+                printf("Mode 1:\r\n\rA random sequence will light LEDs. Match the sequence by\r\n\rpressing the corresponding pushbuttons\r\n\rHigh Score Wins!");
                 //
                 //while (1) // continued loop
                 //{   
@@ -153,16 +152,14 @@ void main(void)
             /***********MODE 2***********/
             if (mode == 2) //enact mode 2 for 8 turns
             {
-                printf("Mode 2:\r\n\rPlayer 1 will create a sequence by pressing pushbuttons. Then, the LEDs will 
-                    \r\n\rbe lit, and Player 2 will match the sequence by pressig the corresponding pushbuttons");
-                //
+                printf("Mode 2:\r\n\rPlayer 1 will create a sequence by pressing pushbuttons. Then, the LEDs will \r\n\rbe lit, and Player 2 will match the sequence by pressing the corresponding pushbuttons");
+             
             } //end mode 2
             
             /***********MODE 3***********/
             if (mode == 3) //enact mode 3 for 8 turns
             {
-                printf("Mode 3:\r\n\r
-                    /r/n/radjusting the potentiometer\r\n\r");
+                printf("Mode 3:\r\n\rset the blink frequency by adjusting the potentiometer. When finished, press pushbutton0/r/n/rthen, set the delay period by adjusting the potentiometer.r\r\n\r");
                 TurnOff();
                 counts = 0
                 while (PB0) //set blink rate
@@ -199,31 +196,31 @@ void main(void)
                 blink_LED(LED0, 4)
                    
             } //end mode 3
-    
+        }
     }
 }
 
-/***********************
+/***********************/
 void Port_Init(void) //Do not touch
 {
     P1MDIN &= ~0x02     //Set analog pin 1.1 to 0 (0000 0010)
     P1MDOUT &= ~0x02     //Set analog pin 1.1 to 0
-    P1 |= 0x02          //Set impdence of analog pin 1.1 to 1
+    P1 |= 0x02          //Set impedance of analog pin 1.1 to 1
     
     P2MDOUT &= 0xC0;    //Set Port 2 bits 0-6 to input (1100 0000)
-    P2 |= ~0xC0;        //High impedence mode
+    P2 |= ~0xC0;        //High impedance mode
 
     P3MDOUT |= 0x3F;    //Set Port 3 bits 0-5 to output (0011 1111)
 }
 
-/***********************
+/***********************/
 void Interrupt_Init(void) //Do not touch
 {
     IE |= 0x02;         // enable Timer0 Interrupt request (by masking)
     EA = 1;             // enable global interrupts (by sbit)
 }
 
-/***********************
+/***********************/
 void Timer_Init(void) //Do not touch
 {
     CKCON |= 0x08;      // Timer0 uses SYSCLK as source
@@ -301,7 +298,7 @@ unsigned char random(void)
 /***********************
 /*blink a specified LED the desired number of times at the rate set by Mode 3.*/
 /***********************/
-blink_LED(unsigned char myled, int times) //rate is a global variable so we don't need to pass it through the function
+blink_LED(myled, int times) //rate is a global variable so we don't need to pass it through the function
 {
     //myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
     //times = number of times you want it to blink
@@ -318,7 +315,7 @@ blink_LED(unsigned char myled, int times) //rate is a global variable so we don'
         }
     }
     counts = 0
-    while (counts <= delay_counts - blink_counts/2)
+    while (counts <= delay_counts - (blink_counts/2))
     {
         myled = 0;
     }
@@ -329,7 +326,7 @@ blink_LED(unsigned char myled, int times) //rate is a global variable so we don'
 /***********************/
 void incorrect(void)
 {
-    int current_count = counts;
+    int current_count = counts; //we don't want to reset the counts
     while (counts < current_count + 337)
     {
         BILED1 = 1;
@@ -337,11 +334,7 @@ void incorrect(void)
     BILED1 = 0
 }
 
-
-
-
-
-
+ 
 
 /***********************/
 int leds(void)
