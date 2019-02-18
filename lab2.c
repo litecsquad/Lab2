@@ -66,7 +66,7 @@ void main(void)
  
     while (1)
     {
-        printf('brief description of game')
+        printf('brief description of game');
         printf("Start\r\n");
     
         //ensure initial conditions of LEDS and BILED
@@ -90,30 +90,30 @@ void main(void)
         {
             if (SS0 && !SS1)       //switch 0 flipped
             {
-                printf("Mode 1 selected\r")
-                mode = 1
+                printf("Mode 1 selected\r");
+                mode = 1;
                 while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released 
             }
             
             else if (SS0 && !SS1)    //switch 1 flipped
             {
-                printf("Mode 2 selected\r")
-                mode = 2
+                printf("Mode 2 selected\r");
+                mode = 2;
                 while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
             }
             
             else if (SS0 && SS1)    //switches 0 and 1 flipped
             {
-                printf("Mode 3 selected\r")
-                mode = 3
+                printf("Mode 3 selected\r");
+                mode = 3;
                 while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
 
             }
             
             else                    //no switches flipped
             {
-                printf("No mode selected\r")
-                mode = 0
+                printf("No mode selected\r");
+                mode = 0;
                 while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released                
             }
         }
@@ -122,7 +122,7 @@ void main(void)
         
         if (mode == 0) //restart because no mode was selected
         {
-            printf("No mode selected. Restart and select a game mode.")
+            printf("No mode selected. Restart and select a game mode.");
         }
         
         else
@@ -161,10 +161,10 @@ void main(void)
             {
                 printf("Mode 3:\r\n\rset the blink frequency by adjusting the potentiometer. When finished, press pushbutton0/r/n/rthen, set the delay period by adjusting the potentiometer.r\r\n\r");
                 TurnOff();
-                counts = 0
+                counts = 0;
                 while (PB0) //set blink rate
                 {
-                    blink_counts = read_and_scale(1, 0.05, 1.0) //convert blink period from 0.05 to 1.0 seconds
+                    blink_counts = read_and_scale(1, 0.05, 1.0); //convert blink period from 0.05 to 1.0 seconds
                     while counts <= blink_counts/2 //on for half of blink time
                     {
                         LED0 = 1;
@@ -180,7 +180,7 @@ void main(void)
     
                 while (PB0) //set delay time
                 {
-                    delay_counts = read_and_scale(1, 1, 8)//convert delay period from 1.0 to 8.0 seconds
+                    delay_counts = read_and_scale(1, 1, 8); //convert delay period from 1.0 to 8.0 seconds
                     while counts <= 169 //LED on for 0.5 seconds
                     {
                         LED0 = 1;
@@ -203,9 +203,9 @@ void main(void)
 /***********************/
 void Port_Init(void) //Do not touch
 {
-    P1MDIN &= ~0x02     //Set analog pin 1.1 to 0 (0000 0010)
-    P1MDOUT &= ~0x02     //Set analog pin 1.1 to 0
-    P1 |= 0x02          //Set impedance of analog pin 1.1 to 1
+    P1MDIN &= ~0x02;     //Set analog pin 1.1 to 0 (0000 0010)
+    P1MDOUT &= ~0x02;     //Set analog pin 1.1 to 0
+    P1 |= 0x02;          //Set impedance of analog pin 1.1 to 1
     
     P2MDOUT &= 0xC0;    //Set Port 2 bits 0-6 to input (1100 0000)
     P2 |= ~0xC0;        //High impedance mode
@@ -277,7 +277,7 @@ void read_and_scale(int n, unsigned char low, unsigned char high)
     unsigned char AD = read_AD_input(n);
     unsigned char V = AD*2.4/256;
     unsigned char counts = floor((((high - low)*V/2.4) + low) * 337);
-    return counts
+    return counts;
 }
 
 /***********************/
@@ -302,7 +302,7 @@ blink_LED(myled, int times) //rate is a global variable so we don't need to pass
 {
     //myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
     //times = number of times you want it to blink
-    counts = 0 
+    counts = 0 ;
     for (a = 0; a <= times; a+=1)
     {
         while counts <= blink_counts/2 
@@ -314,7 +314,7 @@ blink_LED(myled, int times) //rate is a global variable so we don't need to pass
             myled = 0;
         }
     }
-    counts = 0
+    counts = 0;
     while (counts <= delay_counts - (blink_counts/2))
     {
         myled = 0;
@@ -331,7 +331,7 @@ void incorrect(void)
     {
         BILED1 = 1;
     }
-    BILED1 = 0
+    BILED1 = 0;
 }
 
  
@@ -398,7 +398,7 @@ int blinks(void)
     }
     else
     {
-        numb2 = random() //generate a new random number
+        numb2 = random(); //generate a new random number
     }
 
     return(blinks); //number of times it's going to blink
