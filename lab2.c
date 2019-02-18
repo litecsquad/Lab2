@@ -379,6 +379,7 @@ int blinks(void)
     {
         numb2 = random(); //generates a new random number
     }
+    
     last = numb2;
     if (numb2 == 0)
     {
@@ -390,16 +391,7 @@ int blinks(void)
     }
     else if (numb2 == 3)
     {
-        blinks = 2;
+        blinks = 3;
     }
-    else if (numb2 == 3)
-    {
-        blinks = 4;
-    }
-    else
-    {
-        numb2 = random(); //generate a new random number
-    }
-
     return(blinks); //number of times it's going to blink
 }
