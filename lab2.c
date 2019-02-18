@@ -18,9 +18,11 @@ void Timer_Init(void);     // Initialize Timer 0
 void Interrupt_Init(void); //Initialize interrupts
 void Timer0_ISR(void) __interrupt 1; //Initialize Timer Interrupt Service 
 unsigned char random(void); //generates random number
-unsigned char blinks(void);
+unsigned char blinks(void); 
 unsigned char leds(void);
 void ADC_Init(void);
+//###### Add all of our functions ########
+
 //-----------------------------------------------------------------------------
 // Global Variables
 //-----------------------------------------------------------------------------
@@ -308,25 +310,32 @@ blink_LED(unsigned char myled, int times) //rate is a global variable so we don'
     {
         while counts <= blink_counts/2 
         {
-            myled = 0
+            myled = 0;
         }
         while counts <= blink_counts 
         {
-            myled = 0
+            myled = 0;
         }
     }
     counts = 0
-    while counts <= delay_counts
+    while (counts <= delay_counts - blink_counts/2)
     {
-        myled = 0
+        myled = 0;
     }
 } 
 
-/***********************
+/***********************/
 /*flash the BiLED red for 1 s when an incorrect sequence has been entered.*/
 /***********************/
-
-
+void incorrect(void)
+{
+    int current_count = counts;
+    while (counts < current_count + 337)
+    {
+        BILED1 = 1;
+    }
+    BILED1 = 0
+}
 
 
 
