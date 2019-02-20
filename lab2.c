@@ -303,8 +303,18 @@ unsigned char random(int n)
 /***********************/
 /*compare given answer to the desired value and light BILED*/
 /***********************/
-
-
+void compare(int correct, int user)
+{
+	if (correct == user)
+	{
+		blink_LED(BILED0, 1);
+	}
+	
+	else
+	{
+		blink_LED(BILED1, 1);
+	}
+}
 
 /***********************/
 /*blink a specified LED the desired number of times at the rate set by Mode 3.*/
