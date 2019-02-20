@@ -54,7 +54,7 @@ __sbit __at 0xB5 LED3; //34; LED3
 unsigned int counts;     //TIME
 int turn;                //8 cycle sequences per game
 unsigned int score;      //print at the end of each game
-int game_sequence[4][4], LED, blinks; // OR we can do one "array" that repeats the LED # however many times it needs to blink
+int game_sequence[8][2]; // OR we can do one "array" that repeats the LED # however many times it needs to blink
 unsigned int mode;      //keeps track of user-inputted mode
 //unsigned char AD1_1;    //AD value on P1.1
 unsigned int delay_counts; //counts per delay period
