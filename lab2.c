@@ -344,27 +344,72 @@ int compare(int correct, int user)
 /***********************/
 /*blink a specified LED the desired number of times at the rate set by Mode 3.*/
 /***********************/
-void blink_LED(char myled, int times) //rate is a global variable so we don't need to pass it through the function
+void blink_LED(int lednum, int times) //rate is a global variable so we don't need to pass it through the function
 {
-    //myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
-    //times = number of times you want it to blink
-    counts = 0 ;
-    for (a = 0; a <= times; a+=1)
-    {
-        while counts <= blink_counts/2 
-        {
-            myled = 0;
-        }
-        while counts <= blink_counts 
-        {
-            myled = 0;
-        }
-    }
-    counts = 0;
-    while (counts <= delay_counts - (blink_counts/2))
-    {
-        myled = 0;
-    }
+	//myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
+	//times = number of times you want it to blink
+	counts = 0 ;
+	for (a = 0; a <= times; a+=1)
+	{
+		while counts <= blink_counts/2 
+		{
+			if (lednum == 0)
+			{
+				LED0 = 1;
+			}
+			else if (lednum == 1)
+			{
+				LED1 = 1;
+			}
+			else if (lednum == 2)
+			{
+				LED2 = 1;
+			}
+			else if (lednum == 2)
+			{
+				LED3 = 1;
+			}
+		}
+		while counts <= blink_counts 
+		{
+			if (lednum == 0)
+			{
+				LED0 = 0;
+			}
+			else if (lednum == 1)
+			{
+				LED1 = 0;
+			}
+			else if (lednum == 2)
+			{
+				LED2 = 0;
+			}
+			else if (lednum == 2)
+			{
+				LED3 = 0;
+			}
+        	}
+    	}
+	counts = 0;
+	while (counts <= delay_counts - (blink_counts/2))
+	{
+		if (lednum == 0)
+		{
+			LED0 = 0;
+		}
+		else if (lednum == 1)
+		{
+			LED1 = 0;
+		}
+		else if (lednum == 2)
+		{
+			LED2 = 0;
+		}
+		else if (lednum == 2)
+		{
+			LED3 = 0;
+		}
+	}
 } 
 
 /***********************/
