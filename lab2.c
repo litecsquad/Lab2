@@ -6,7 +6,7 @@
         This program demonstrates ###################
 */
 
-#include <c8051_SDCC.h //include files. This file is available online
+#include <c8051_SDCC.h> //include files. This file is available online
 #include <stdio.h>
 #include <stdlib.h>
  
@@ -18,9 +18,14 @@ void Timer_Init(void);     // Initialize Timer 0
 void Interrupt_Init(void); //Initialize interrupts
 void Timer0_ISR(void) __interrupt 1; //Initialize Timer Interrupt Service 
 unsigned char random(void); //generates random number
-unsigned char blinks(void); 
+int blinks(void); 
 unsigned char leds(void);
 void ADC_Init(void);
+void TurnOff(void);
+int read_and_scale(int n, unsigned char low, unsigned char high);
+void blink_LED(char myled, int times);
+
+
 //###### Add all of our functions ########
 
 //-----------------------------------------------------------------------------
@@ -46,7 +51,7 @@ __sbit __at 0xB3 LED1; //36; LED1
 __sbit __at 0xB4 LED2; //33; LED2
 __sbit __at 0xB5 LED3; //34; LED3
 
-unsigned int Counts;     //TIME
+unsigned int counts;     //TIME
 int turn;                //8 cycle sequences per game
 unsigned int score;      //print at the end of each game
 int game_sequence[4][4], LED, blinks; // OR we can do one "array" that repeats the LED # however many times it needs to blink
@@ -54,19 +59,24 @@ unsigned int mode;      //keeps track of user-inputted mode
 //unsigned char AD1_1;    //AD value on P1.1
 unsigned int delay_counts; //counts per delay period
 unsigned int blink_counts; //counts per blink period (50% on, 50% off)
+unsigned char seed;
 
+
+
+
+/*************************/
 void main(void)
 {
     Sys_Init();      // System Initialization
     Port_Init();     // Initialize ports 2 and 3 
     Interrupt_Init();
     Timer_Init();    // Initialize Timer 0 
-    putchar('');    // the quote fonts may not copy correctly into SiLabs IDE
+    putchar(' ');    // the quote fonts may not copy correctly into SiLabs IDE
     
  
     while (1)
     {
-        printf('brief description of game');
+        printf("brief description of game");
         printf("Start\r\n");
     
         //ensure initial conditions of LEDS and BILED
@@ -77,7 +87,7 @@ void main(void)
         seed = getchar();
         srand(seed);
         
-        AD1_1 = read_AD_input(1);  //Read  A/D value on P1.1
+        //AD1_1 = read_AD_input(1);  //Read  A/D value on P1.1
         
         
         /*SET DEFAULT VALUES*/
@@ -165,35 +175,36 @@ void main(void)
                 while (PB0) //set blink rate
                 {
                     blink_counts = read_and_scale(1, 0.05, 1.0); //convert blink period from 0.05 to 1.0 seconds
-                    while counts <= blink_counts/2 //on for half of blink time
+                    while (counts <= blink_counts/2) //on for half of blink time
                     {
                         LED0 = 1;
                     }
                     
-                    while counts <= blink_counts //off for half of blink time
+                    while (counts <= blink_counts) //off for half of blink time
                     {
                         LED0 = 0;
                     }
                 }
                 blink_counts = blink_counts;
                 counts = 0;
+
     
                 while (PB0) //set delay time
                 {
                     delay_counts = read_and_scale(1, 1, 8); //convert delay period from 1.0 to 8.0 seconds
-                    while counts <= 169 //LED on for 0.5 seconds
+                    while (counts <= 169) //LED on for 0.5 seconds
                     {
                         LED0 = 1;
                     }
                     
-                    while counts <= 169 + delay_counts //led off for delay period
+                    while (counts <= 169 + delay_counts) //led off for delay period
                     {
                         LED0 = 0;
                     }
                 }
                 delay_counts = delay_counts;
                 
-                blink_LED(LED0, 4)
+                blink_LED(LED0, 4);
                    
             } //end mode 3
         }
@@ -235,7 +246,7 @@ void Timer_Init(void) //Do not touch
 void Timer0_ISR(void) __interrupt 1
 {
     TF0 = 0;            //interrupt code
-    Counts++;           //increment global counts variable
+    counts++;           //increment global counts variable
 }
  
 
@@ -272,11 +283,11 @@ void TurnOff(void)
 /***********************/
 /*MODE 3 ONLY read the potentiometer at P1.n and scale the value to return counts linear to time low and high*/
 /***********************/
-void read_and_scale(int n, unsigned char low, unsigned char high)
+int read_and_scale(int n, unsigned char low, unsigned char high)
 {
     unsigned char AD = read_AD_input(n);
     unsigned char V = AD*2.4/256;
-    unsigned char counts = floor((((high - low)*V/2.4) + low) * 337);
+    unsigned char counts = floor(((((high - low)*V/2.4) + low) * 337));
     return counts;
 }
 
@@ -295,10 +306,10 @@ unsigned char random(void)
 
 
 
-/***********************
+/***********************/
 /*blink a specified LED the desired number of times at the rate set by Mode 3.*/
 /***********************/
-blink_LED(myled, int times) //rate is a global variable so we don't need to pass it through the function
+blink_LED(char myled, int times) //rate is a global variable so we don't need to pass it through the function
 {
     //myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
     //times = number of times you want it to blink
@@ -379,7 +390,6 @@ int blinks(void)
     {
         numb2 = random(); //generates a new random number
     }
-    
     last = numb2;
     if (numb2 == 0)
     {
@@ -391,7 +401,16 @@ int blinks(void)
     }
     else if (numb2 == 3)
     {
-        blinks = 3;
+        blinks = 2;
     }
+    else if (numb2 == 3)
+    {
+        blinks = 4;
+    }
+    else
+    {
+        numb2 = random(); //generate a new random number
+    }
+
     return(blinks); //number of times it's going to blink
 }
