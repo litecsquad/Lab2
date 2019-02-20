@@ -307,13 +307,23 @@ void compare(int correct, int user)
 {
 	if (correct == user)
 	{
-		blink_LED(BILED0, 1);
-	}
-	
+		int current_count = counts; //we don't want to reset the counts
+    		while (counts < current_count + 337)
+		    {
+			BILED0 = 1;
+		    }
+		BILED0 = 0;
+		}
+
 	else
 	{
-		blink_LED(BILED1, 1);
-	}
+		int current_count = counts; //we don't want to reset the counts
+    		while (counts < current_count + 337)
+		    {
+			BILED1 = 1;
+		    }
+		BILED1 = 0;
+		}	}
 }
 
 /***********************/
