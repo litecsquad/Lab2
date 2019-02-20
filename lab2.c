@@ -303,7 +303,7 @@ unsigned char random(int n)
 /***********************/
 /*compare given answer to the desired value and light BILED*/
 /***********************/
-void compare(int correct, int user)
+int compare(int correct, int user)
 {
 	if (correct == user)
 	{
@@ -311,6 +311,7 @@ void compare(int correct, int user)
     		while (counts < current_count + 337)
 		    {
 			BILED0 = 1;
+			correct = 1
 		    }
 		BILED0 = 0;
 		}
@@ -321,9 +322,12 @@ void compare(int correct, int user)
     		while (counts < current_count + 337)
 		    {
 			BILED1 = 1;
+			correct = 0
 		    }
 		BILED1 = 0;
-		}	}
+	}
+	return correct
+
 }
 
 /***********************/
