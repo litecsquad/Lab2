@@ -1,1 +1,143 @@
+/*  Names: Reagan Wilcox, Julia Meissner, Galilea Olvera
+    Section: 4
+    Date: 2/1/2019
+    File name: LAB 2
+    Description:
+        This program demonstrates ###################
+*/
 
+#include <c8051_SDCC.h> //include files. This file is available online
+#include <stdio.h>
+#include <stdlib.h>
+ 
+//-----------------------------------------------------------------------------
+// Function Prototypes
+//-----------------------------------------------------------------------------
+void Port_Init(void);      // Initialize ports for input and output
+void Timer_Init(void);     // Initialize Timer 0 
+void Interrupt_Init(void); //Initialize interrupts
+void Timer0_ISR(void) __interrupt 1; //Initialize Timer Interrupt Service 
+unsigned char random(void); //generates random number
+int blinks(void); 
+unsigned char leds(void);
+void ADC_Init(void);
+void TurnOff(void);
+int read_and_scale(int n, unsigned char low, unsigned char high);
+void blink_LED(char myled, int times);
+
+
+//###### Add all of our functions ########
+
+//-----------------------------------------------------------------------------
+// Global Variables
+//-----------------------------------------------------------------------------
+//Port 1
+/*MIDDLE PIN OF POTENTIOMETER MUST BE CONNECTED TO P1.1 = pin 13 #########*/
+
+//Port 2
+__sbit __at 0xA0 PB0; //29; Pushbutton 0
+__sbit __at 0xA1 PB1; //30; Pushbutton 1
+__sbit __at 0xA2 PB2; //27; Pushbutton 2
+__sbit __at 0xA3 PB3; //28; Pushbutton 3
+__sbit __at 0xA4 SS0; //24; Slide switch 0
+__sbit __at 0xA5 SS1; //25; Slide switch 1
+//__sbit __at 0xA6 POT; //22; Potentiometer **INCORRECTUMUNDO: should be in P1.1**
+
+//Port 3
+__sbit __at 0xB0 BILED0; //38; BILED 0
+__sbit __at 0xB1 BILED1; //37;BILED 1
+__sbit __at 0xB2 LED0; //35; LED0
+__sbit __at 0xB3 LED1; //36; LED1
+__sbit __at 0xB4 LED2; //33; LED2
+__sbit __at 0xB5 LED3; //34; LED3
+
+unsigned int counts;     //TIME
+int turn;                //8 cycle sequences per game
+unsigned int score;      //print at the end of each game
+int game_sequence[4][4], LED, blinks; // OR we can do one "array" that repeats the LED # however many times it needs to blink
+unsigned int mode;      //keeps track of user-inputted mode
+//unsigned char AD1_1;    //AD value on P1.1
+unsigned int delay_counts; //counts per delay period
+unsigned int blink_counts; //counts per blink period (50% on, 50% off)
+unsigned char seed;
+int i;
+
+
+
+
+/*************************/
+void main(void)
+{
+    LED0 = 1; LED1 = 1; LED2 = 0; LED3 = 1;
+    BILED0 = 1; BILED1 = 0;
+
+}
+
+/***********************/
+void Port_Init(void) //Do not touch
+{
+    P1MDIN &= ~0x02;     //Set analog pin 1.1 to 0 (0000 0010)
+    P1MDOUT &= ~0x02;     //Set analog pin 1.1 to 0
+    P1 |= 0x02;          //Set impedance of analog pin 1.1 to 1
+    
+    P2MDOUT &= 0xC0;    //Set Port 2 bits 0-6 to input (1100 0000)
+    P2 |= ~0xC0;        //High impedance mode
+
+    P3MDOUT |= 0x3F;    //Set Port 3 bits 0-5 to output (0011 1111)
+}
+
+/***********************/
+void Interrupt_Init(void) //Do not touch
+{
+    IE |= 0x02;         // enable Timer0 Interrupt request (by masking)
+    EA = 1;             // enable global interrupts (by sbit)
+}
+
+/***********************/
+void Timer_Init(void) //Do not touch
+{
+    CKCON |= 0x08;      // Timer0 uses SYSCLK as source
+    TMOD &= 0xFC;       // clear the 4 least significant bits
+    //TMOD |= 0x01;     // Timer0 in mode 1 -> 16 bits
+    TR0 = 0;            // Stop Timer0
+    TMR0 = 0;           // Clear high & low byte of T0
+}
+ 
+
+/***********************/
+void Timer0_ISR(void) __interrupt 1
+{
+    TF0 = 0;            //interrupt code
+    counts++;           //increment global counts variable
+}
+ 
+
+/***********************/
+void ADC_Init(void) //Do not touch
+{
+    REF0CN = 0x03; /* Set Vref to use internal reference voltage (2.4V) */
+    ADC1CN = 0x80; /* Enable A/D converter (ADC1) */
+    ADC1CF |= 0x01; /* Set A/D converter gain to 1 */
+}
+
+/***********************/
+unsigned char read_AD_input(unsigned char n) // Do not touch
+{
+    AMX1SL = n; /* Set P1.n as the analog input for ADC1 */
+    //LAB SAYS AMuX1SL ##error ??
+    ADC1CN = ADC1CN & ~0x20; /* Clear the “Conversion Completed” flag */
+    ADC1CN = ADC1CN | 0x10; /* Initiate A/D conversion */
+    while ((ADC1CN & 0x20) == 0x00); /* Wait for conversion to complete */
+    return ADC1; /* Return digital value in ADC1 register */
+}
+ 
+/***********************LAB-2-SPECIFIC FUNCTIONS***********************/
+
+/***********************/
+/*Turn off all LEDs and BILED*/
+/***********************/
+void TurnOff(void)
+{
+    LED0 = 0; LED1 = 0; LED2 = 0; LED3 = 0;
+    BILED0 = 0; BILED1 = 0;
+}
