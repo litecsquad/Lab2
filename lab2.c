@@ -145,6 +145,7 @@ void main(void)
 				printf("\r\nyeeee\r\n");
 				}               
             }
+		}
 
         /*if you're here, pushbotton0 was pressed*/
         
@@ -356,7 +357,7 @@ void main(void)
                    
             } //end mode 3
         }
-    }
+   
 }
 
 /***********************/
@@ -605,4 +606,3 @@ void game (void)
  
 
 /***********************/
-
