@@ -309,7 +309,7 @@ unsigned char random(int n)
 /***********************/
 /*blink a specified LED the desired number of times at the rate set by Mode 3.*/
 /***********************/
-blink_LED(char myled, int times) //rate is a global variable so we don't need to pass it through the function
+void blink_LED(char myled, int times) //rate is a global variable so we don't need to pass it through the function
 {
     //myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
     //times = number of times you want it to blink
