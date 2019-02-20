@@ -287,7 +287,7 @@ unsigned char read_AD_input(unsigned char n) // Do not touch
 /***********************/
 void TurnOff(void)
 {
-    LED0 = 0; LED1 = 0; LED2 = 0; LED3 = 0;
+    LED0 = 1; LED1 = 1; LED2 = 1; LED3 = 1;
     BILED0 = 0; BILED1 = 0;
 }
 
@@ -307,7 +307,7 @@ int read_and_scale(int n, unsigned char low, unsigned char high)
 /***********************/
 unsigned char random(int n)
 {
-    return (rand()%(3-n) + n;   // rand returns a random number between 0 and 32767. 
+    return (rand()%(3-n) + n);   // rand returns a random number between 0 and 32767. 
                                 // if n = 0, return number 0-3, if n = 1, return number 1-3
 }
 
@@ -322,7 +322,7 @@ int compare(int correct, int user)
     		while (counts < current_count + 337)
 		    {
 			BILED0 = 1;
-			correct = 1
+			correct = 1;
 		    }
 		BILED0 = 0;
 		}
