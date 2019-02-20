@@ -294,7 +294,7 @@ int read_and_scale(int n, unsigned char low, unsigned char high)
 /***********************/
 /*return a random integer number between n and 3*/
 /***********************/
-unsigned char random(void)
+unsigned char random(int n)
 {
     return (rand()%(3-n) + n;   // rand returns a random number between 0 and 32767. 
                                 // if n = 0, return number 0-3, if n = 1, return number 1-3
