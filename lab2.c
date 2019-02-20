@@ -345,6 +345,39 @@ void incorrect(void)
     BILED1 = 0;
 }
 
+/*******************/
+//store each sequence of LEDS and blinks in an array    
+/*******************/
+int game (unsigned int blinks, unsigned int led, unsigned int i)
+{
+
+        if led == 0
+        {
+            game_sequence[i][0] = 0;
+            game_sequence[i][1] = blinks;
+		
+
+        }
+        if led == 1
+        {
+		 game_sequence[i][0] = 1;
+            game_sequence[i][1] = blinks;
+		
+        }
+        if led == 2
+        {
+		 game_sequence[i][0] = 2;
+            game_sequence;[i][1] = blinks;
+		
+        }
+        if led == 3
+        {
+             game_sequence[i][0] = 3;
+             game_sequence[i][1] = blinks;
+		
+        }
+}
+
  
 
 /***********************/
