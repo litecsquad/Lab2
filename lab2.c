@@ -25,6 +25,7 @@ void TurnOff(void);
 int read_and_scale(int n, unsigned char low, unsigned char high);
 void blink_LED(char myled, int times);
 int a;
+void game(void);
 
 //###### Add all of our functions ########
 
@@ -55,12 +56,17 @@ unsigned int counts;     //TIME
 int turn;                //8 cycle sequences per game
 unsigned int score;      //print at the end of each game
 int game_sequence[8][2]; // OR we can do one "array" that repeats the LED # however many times it needs to blink
+int responce[8][2];
 unsigned int mode;      //keeps track of user-inputted mode
 //unsigned char AD1_1;    //AD value on P1.1
 unsigned int delay_counts; //counts per delay period
 unsigned int blink_counts; //counts per blink period (50% on, 50% off)
 unsigned char seed;
-
+int blink_counter;
+int scorer;
+int i;
+int index;
+char answer;
 
 
 
@@ -149,26 +155,145 @@ void main(void)
         else
             //delay ?
             /***********MODE 1***********/
-            if (mode == 1) //enact mode 1 for 8 turns
+             if (mode == 1) //enact mode 1 for 8 turns
             {
-                printf("Mode 1:\r\n\rA random sequence will light LEDs. Match the sequence by\r\n\rpressing the corresponding pushbuttons\r\n\rHigh Score Wins!");
-                //
-                //while (1) // continued loop
-                //{   
-                    /*at end of 8-0seuence turn: displace score, go back to original instructions*/
-                    //score = 0;
-                    
-                    
+		while(1)
+		{
+	                printf("Mode 1:\r\n\rA random sequence will light LEDs. Match the sequence by\r\n\rpressing the corresponding pushbuttons\r\n\rHigh Score Wins!");
+					printf("Press Push Button 0 to start \r\n");
+	                i = 0;
+					score = 0;
+					TurnOff();
+					game();
+					while( i < 9 )
+					{
+						if (!PB0)
+						{
+						index = 0;
+							while (index <= i)
+							{
+								if (game_sequence[index][0] == 0)
+								{
+									blink_LED(LED0,game_sequence[index][1]);
+								}
 
-                    //while (!PB) // wait for PB to be pressed to start the game
-                    //{
-                        //while (turn < 9) //while less than 8 turns
-                        //{
-                            //game_sequence = {0,0,0,0} //clear game sequence array
-                        //}
-                    //}
-                //}
-            } //end mode 1
+								else if (game_sequence[index][0] == 1)
+								{
+									blink_LED(LED1,game_sequence[index][1]);
+								}
+
+								else if (game_sequence[index][0] == 2)
+								{
+									blink_LED(LED2,game_sequence[index][1]);
+								}
+
+								else if (game_sequence[index][0] == 3)
+								{
+									blink_LED(LED3,game_sequence[index][1]);
+								}
+
+								index ++;
+
+								BILED0 = 1;
+
+							}
+							index = 0;
+
+							while (index <= i)
+							{
+							counts = 0;
+						
+							responce = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
+								if (!PB0 || !PB1 || !PB2 || !PB3)
+								{
+								blink_counter = 0;
+									while (blink_counter <= game_sequence[index][1])
+									{
+										counts = 0;
+										while (counts <= 667)
+										{
+											if (!PB0)
+											{
+											responce[index][0] = 0;
+											responce[index][1] += 1;
+
+											}
+											if (!PB1)
+											{
+											responce[index][0] = 1;
+											responce[index][1] += 1;
+
+											}
+											if (!PB2)
+											{
+											responce[index][0] = 2;
+											responce[index][1] += 1;
+
+											}
+											if (!PB3)
+											{
+											responce[index][0] = 3;
+											responce[index][1] += 1;
+
+											}
+										}
+										counts = 0;
+										while(counts <= 337)
+										{
+											LED0 = 1;
+											LED1 = 1;
+											LED2 = 1;
+											LED3 = 1;
+										}
+										TurnOff();
+										scorer = 0;
+										while(scorer <= index)
+										{
+											if ((game_sequence[index][0] == responce[index][0]) && (game_sequence[index][1] == responce[index][1]))
+											{
+												score ++;
+											}
+											else
+											{
+												BILED1 = 1;
+												counts = 0;
+												while( counts <= 337 )
+												{}
+												BILED1 = 0
+											}
+
+										scorer ++;
+										}
+
+
+										blink_counter ++;
+								
+								
+									}
+						
+									
+									
+								  
+								  	
+								
+							
+
+								}
+
+							}
+							printf("Your score is %d /r/n", score);
+
+
+						}
+						printf("Do you want to play again? y if yess, n if no /r/n");
+						answer = getchar('');
+						if answer == 'n'
+						{
+							break
+						}
+					}  
+				}
+			}
             
             /***********MODE 2***********/
             if (mode == 2) //enact mode 2 for 8 turns
@@ -344,72 +469,27 @@ int compare(int correct, int user)
 /***********************/
 /*blink a specified LED the desired number of times at the rate set by Mode 3.*/
 /***********************/
-void blink_LED(int lednum, int times) //rate is a global variable so we don't need to pass it through the function
+void blink_LED(char myled, int times) //rate is a global variable so we don't need to pass it through the function
 {
-	//myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
-	//times = number of times you want it to blink
-	counts = 0 ;
-	for (a = 0; a <= times; a+=1)
-	{
-		while counts <= blink_counts/2 
-		{
-			if (lednum == 0)
-			{
-				LED0 = 1;
-			}
-			else if (lednum == 1)
-			{
-				LED1 = 1;
-			}
-			else if (lednum == 2)
-			{
-				LED2 = 1;
-			}
-			else if (lednum == 2)
-			{
-				LED3 = 1;
-			}
-		}
-		while counts <= blink_counts 
-		{
-			if (lednum == 0)
-			{
-				LED0 = 0;
-			}
-			else if (lednum == 1)
-			{
-				LED1 = 0;
-			}
-			else if (lednum == 2)
-			{
-				LED2 = 0;
-			}
-			else if (lednum == 2)
-			{
-				LED3 = 0;
-			}
-        	}
-    	}
-	counts = 0;
-	while (counts <= delay_counts - (blink_counts/2))
-	{
-		if (lednum == 0)
-		{
-			LED0 = 0;
-		}
-		else if (lednum == 1)
-		{
-			LED1 = 0;
-		}
-		else if (lednum == 2)
-		{
-			LED2 = 0;
-		}
-		else if (lednum == 2)
-		{
-			LED3 = 0;
-		}
-	}
+    //myled = the LED you want to blink (ie. LED0) ###is unsigned char correct for this???####
+    //times = number of times you want it to blink
+    counts = 0 ;
+    for (a = 0; a <= times; a+=1)
+    {
+        while counts <= blink_counts/2 
+        {
+            myled = 0;
+        }
+        while counts <= blink_counts 
+        {
+            myled = 0;
+        }
+    }
+    counts = 0;
+    while (counts <= delay_counts - (blink_counts/2))
+    {
+        myled = 0;
+    }
 } 
 
 /***********************/
@@ -428,34 +508,41 @@ void incorrect(void)
 /*******************/
 //store each sequence of LEDS and blinks in an array    
 /*******************/
-int game (unsigned int blinks, unsigned int led, unsigned int i)
+int game (void)
 {
-
-        if led == 0
+	int b = 0;
+	int blink = random(1);
+	int led = random(0);
+	while (b<9)
+	{
+		if (led == 0)
         {
-            game_sequence[i][0] = 0;
-            game_sequence[i][1] = blinks;
+            game_sequence[b][0] = 0;
+            game_sequence[b][1] = blink;
 		
 
         }
-        if led == 1
+        if (led == 1)
         {
-		 game_sequence[i][0] = 1;
-            game_sequence[i][1] = blinks;
+		 	game_sequence[b][0] = 1;
+            game_sequence[b][1] = blink;
 		
         }
-        if led == 2
+        if (led == 2)
         {
-		 game_sequence[i][0] = 2;
-            game_sequence;[i][1] = blinks;
+		 	game_sequence[b][0] = 2;
+            game_sequence[b][1] = blink;
 		
         }
-        if led == 3
+        if (led == 3)
         {
-             game_sequence[i][0] = 3;
-             game_sequence[i][1] = blinks;
+             game_sequence[b][0] = 3;
+             game_sequence[b][1] = blink;
+		b++;
 		
+
         }
+	
 }
 
  
