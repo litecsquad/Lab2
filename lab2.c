@@ -3,7 +3,7 @@
     Date: 2/1/2019
     File name: LAB 2
     Description:
-        This program demonstrates ###################
+		This program demonstrates ###################
 */
 
 #include <c8051_SDCC.h> //include files. This file is available online
@@ -17,14 +17,14 @@ void Port_Init(void);      // Initialize ports for input and output
 void Timer_Init(void);     // Initialize Timer 0 
 void Interrupt_Init(void); //Initialize interrupts
 void Timer0_ISR(void) __interrupt 1; //Initialize Timer Interrupt Service 
-unsigned char random(void); //generates random number
+int random(int n); //generates random number
 int blinks(void); 
 unsigned char leds(void);
 void ADC_Init(void);
 void TurnOff(void);
 int read_and_scale(int n, unsigned char low, unsigned char high);
 void blink_LED(char myled, int times);
-
+int a;
 
 //###### Add all of our functions ########
 
@@ -76,7 +76,7 @@ void main(void)
  
     while (1)
     {
-        printf("brief description of game");
+        printf("\r\nBrief description of game\r\n");
         printf("Start\r\n");
     
         //ensure initial conditions of LEDS and BILED
@@ -95,14 +95,16 @@ void main(void)
         delay_counts = 337;
     
         //read switches to see what game mode the user chooses
-        printf("Select a game mode by moving the slide switches");
+        printf("Select a game mode by moving the slide switches\r\n");
         while (PB0) //loop cotinues until pushbutton0 is pressed
         {
+			
             if (SS0 && !SS1)       //switch 0 flipped
             {
                 printf("Mode 1 selected\r");
                 mode = 1;
-                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released 
+                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
+				
             }
             
             else if (SS0 && !SS1)    //switch 1 flipped
@@ -110,6 +112,7 @@ void main(void)
                 printf("Mode 2 selected\r");
                 mode = 2;
                 while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
+
             }
             
             else if (SS0 && SS1)    //switches 0 and 1 flipped
@@ -117,6 +120,10 @@ void main(void)
                 printf("Mode 3 selected\r");
                 mode = 3;
                 while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
+				if (!PB1)
+				{
+				printf("\r\nyeeee\r\n");
+				}
 
             }
             
@@ -124,17 +131,21 @@ void main(void)
             {
                 printf("No mode selected\r");
                 mode = 0;
-                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released                
+                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released 
+				if (!PB1)
+				{
+				printf("\r\nyeeee\r\n");
+				}               
             }
-        }
-        
+
         /*if you're here, pushbotton0 was pressed*/
         
         if (mode == 0) //restart because no mode was selected
         {
             printf("No mode selected. Restart and select a game mode.");
         }
-        
+           
+	    
         else
             //delay ?
             /***********MODE 1***********/
