@@ -23,7 +23,7 @@ unsigned char leds(void);
 void ADC_Init(void);
 void TurnOff(void);
 int read_and_scale(int n, unsigned char low, unsigned char high);
-void blink_LED(char myled, int times);
+void blink_LED(int lednum, int times);
 int a;
 void game(void);
 
@@ -67,6 +67,8 @@ int scorer;
 int i;
 int index;
 char answer;
+int x;
+int j;
 
 
 
@@ -174,22 +176,22 @@ void main(void)
 							{
 								if (game_sequence[index][0] == 0)
 								{
-									blink_LED(LED0,game_sequence[index][1]);
+									blink_LED(0,game_sequence[index][1]);
 								}
 
 								else if (game_sequence[index][0] == 1)
 								{
-									blink_LED(LED1,game_sequence[index][1]);
+									blink_LED(1,game_sequence[index][1]);
 								}
 
 								else if (game_sequence[index][0] == 2)
 								{
-									blink_LED(LED2,game_sequence[index][1]);
+									blink_LED(2,game_sequence[index][1]);
 								}
 
 								else if (game_sequence[index][0] == 3)
 								{
-									blink_LED(LED3,game_sequence[index][1]);
+									blink_LED(3,game_sequence[index][1]);
 								}
 
 								index ++;
@@ -201,9 +203,19 @@ void main(void)
 
 							while (index <= i)
 							{
-							counts = 0;
+								counts = 0;
 						
-							responce = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
+							//responce = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
+								for (x = 0; x < 8; ++x)
+									{
+										responce[x] = 0;
+										for (j = 0; j<2; ++j)
+										{
+											responce[x][j] = 0;
+										}
+
+
+									}
 								if (!PB0 || !PB1 || !PB2 || !PB3)
 								{
 								blink_counter = 0;
@@ -259,7 +271,7 @@ void main(void)
 												counts = 0;
 												while( counts <= 337 )
 												{}
-												BILED1 = 0
+												BILED1 = 0;
 											}
 
 										scorer ++;
@@ -287,9 +299,9 @@ void main(void)
 						}
 						printf("Do you want to play again? y if yess, n if no /r/n");
 						answer = getchar('');
-						if answer == 'n'
+						if (answer == "n")
 						{
-							break
+							break;
 						}
 					}  
 				}
@@ -423,14 +435,14 @@ int read_and_scale(int n, unsigned char low, unsigned char high)
 {
     unsigned char AD = read_AD_input(n);
     unsigned char V = AD*2.4/256;
-    unsigned char counts = floor(((((high - low)*V/2.4) + low) * 337));
+    unsigned char counts = ((((high - low)*V/2.4) + low) * 337);
     return counts;
 }
 
 /***********************/
 /*return a random integer number between n and 3*/
 /***********************/
-unsigned char random(int n)
+int random(int n)
 {
     return (rand()%(3-n) + n);   // rand returns a random number between 0 and 32767. 
                                 // if n = 0, return number 0-3, if n = 1, return number 1-3
@@ -458,11 +470,11 @@ int compare(int correct, int user)
     		while (counts < current_count + 337)
 		    {
 			BILED1 = 1;
-			correct = 0
+			correct = 0;
 		    }
 		BILED1 = 0;
 	}
-	return correct
+	return correct;
 
 }
 
@@ -476,7 +488,7 @@ void blink_LED(int lednum, int times) //rate is a global variable so we don't ne
 	counts = 0 ;
 	for (a = 0; a <= times; a+=1)
 	{
-		while counts <= blink_counts/2 
+		while (counts <= blink_counts/2 )
 		{
 			if (lednum == 0)
 			{
@@ -495,7 +507,7 @@ void blink_LED(int lednum, int times) //rate is a global variable so we don't ne
 				LED3 = 1;
 			}
 		}
-		while counts <= blink_counts 
+		while (counts <= blink_counts )
 		{
 			if (lednum == 0)
 			{
@@ -553,7 +565,7 @@ void incorrect(void)
 /*******************/
 //store each sequence of LEDS and blinks in an array    
 /*******************/
-int game (void)
+void game (void)
 {
 	int b = 0;
 	int blink = random(1);
@@ -584,6 +596,13 @@ int game (void)
              game_sequence[b][0] = 3;
              game_sequence[b][1] = blink;
 		b++;
+		
+
         }
-	
+	}
 }
+
+ 
+
+/***********************/
+
