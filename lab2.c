@@ -2,8 +2,6 @@
     Section: 4
     Date: 2/1/2019
     File name: LAB 2
-    Description:
-		This program demonstrates ###################
 */
 
 #include <c8051_SDCC.h> //include files. This file is available online
@@ -26,6 +24,10 @@ int read_and_scale(int n, unsigned char low, unsigned char high);
 void blink_LED(int lednum, int times);
 int a;
 void game(void);
+unsigned char read_AD_input(unsigned char n);
+
+
+
 
 //###### Add all of our functions ########
 
@@ -55,20 +57,20 @@ __sbit __at 0xB5 LED3; //34; LED3
 unsigned int counts;     //TIME
 int turn;                //8 cycle sequences per game
 unsigned int score;      //print at the end of each game
-int game_sequence[8][2]; // OR we can do one "array" that repeats the LED # however many times it needs to blink
-int responce[8][2];
+char game_sequence[8][2]; // OR we can do one "array" that repeats the LED # however many times it needs to blink
+char responce[8][2];
 unsigned int mode;      //keeps track of user-inputted mode
 //unsigned char AD1_1;    //AD value on P1.1
 unsigned int delay_counts; //counts per delay period
 unsigned int blink_counts; //counts per blink period (50% on, 50% off)
 unsigned char seed;
 int blink_counter;
-int scorer;
+char scorer;
 int i;
 int index;
-char answer;
-int x;
-int j;
+unsigned char answer;
+char x;
+char j;
 
 
 
@@ -111,15 +113,20 @@ void main(void)
             {
                 printf("Mode 1 selected\r");
                 mode = 1;
-                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
-				
-            }
+                if (!PB0)
+				{
+					break;
+				} //Wait for PB0 to be released
+			}
             
-            else if (SS0 && !SS1)    //switch 1 flipped
-            {
+            else if (!SS0 && SS1)    //switch 1 flipped
+			{
                 printf("Mode 2 selected\r");
                 mode = 2;
-                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
+                if (!PB0)
+				{
+					break;
+				} //Wait for PB0 to be released
 
             }
             
@@ -127,11 +134,10 @@ void main(void)
             {
                 printf("Mode 3 selected\r");
                 mode = 3;
-                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released
-				if (!PB1)
+                if (!PB0)
 				{
-				printf("\r\nyeeee\r\n");
-				}
+					break;
+				} //Wait for PB0 to be released
 
             }
             
@@ -139,11 +145,10 @@ void main(void)
             {
                 printf("No mode selected\r");
                 mode = 0;
-                while ((SS0 && !SS1 && PB0)){} //Wait for PB0 to be released 
-				if (!PB1)
+                if (!PB0)
 				{
-				printf("\r\nyeeee\r\n");
-				}               
+					break; //Wait for PB0 to be released 
+				}             
             }
 		}
 
@@ -153,24 +158,22 @@ void main(void)
         {
             printf("No mode selected. Restart and select a game mode.");
         }
-           
-	    
-        else
             //delay ?
-            /***********MODE 1***********/
-             if (mode == 1) //enact mode 1 for 8 turns
-            {
-		while(1)
+        /***********MODE 1***********/
+		else if (mode == 1) //enact mode 1 for 8 turns
 		{
-	                printf("Mode 1:\r\n\rA random sequence will light LEDs. Match the sequence by\r\n\rpressing the corresponding pushbuttons\r\n\rHigh Score Wins!");
-					printf("Press Push Button 0 to start \r\n");
+			while(1)
+			{
+	                printf("Mode 1:\r\n\rA random sequence will light LEDs. Match the sequence by\r\n\rpressing the corresponding pushbuttons\r\n\rHigh Score Wins!\r\n");
+					printf("Press Push Button 0 to start\r\n");
 	                i = 0;
 					score = 0;
 					TurnOff();
 					game();
-					while( i < 9 )
+					if (!PB0)
 					{
-						if (!PB0)
+						printf("Loooooooooooooooool\r\n");
+						while (i < 9)
 						{
 						index = 0;
 							while (index <= i)
@@ -209,7 +212,7 @@ void main(void)
 							//responce = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
 								for (x = 0; x < 8; ++x)
 									{
-										responce[x] = 0;
+										//responce[x] = 0;
 										for (j = 0; j<2; ++j)
 										{
 											responce[x][j] = 0;
@@ -298,9 +301,9 @@ void main(void)
 
 
 						}
-						printf("Do you want to play again? y if yess, n if no /r/n");
+						printf("Do you want to play again? y if yes, n if no /r/n");
 						answer = getchar('');
-						if (answer == "n")
+						if (answer == 110)
 						{
 							break;
 						}
@@ -318,12 +321,16 @@ void main(void)
             /***********MODE 3***********/
             if (mode == 3) //enact mode 3 for 8 turns
             {
-                printf("Mode 3:\r\n\rset the blink frequency by adjusting the potentiometer. When finished, press pushbutton0/r/n/rthen, set the delay period by adjusting the potentiometer.r\r\n\r");
+                printf("Mode 3:\r\n\rset the blink frequency by adjusting the potentiometer. When finished, press pushbutton0\r\n\rthen, set the delay period by adjusting the potentiometer.\r\n\r");
                 TurnOff();
                 counts = 0;
-                while (PB0) //set blink rate
+                while (1) //set blink rate
+	
                 {
+					printf("%d", read_AD_input(1));
+					
                     blink_counts = read_and_scale(1, 0.05, 1.0); //convert blink period from 0.05 to 1.0 seconds
+					printf("%d", blink_counts);
                     while (counts <= blink_counts/2) //on for half of blink time
                     {
                         LED0 = 1;
@@ -333,6 +340,10 @@ void main(void)
                     {
                         LED0 = 0;
                     }
+					if (!PB0)
+					{
+						break;
+					}
                 }
                 blink_counts = blink_counts;
                 counts = 0;
@@ -596,13 +607,11 @@ void game (void)
         {
              game_sequence[b][0] = 3;
              game_sequence[b][1] = blink;
-		b++;
-		
-
         }
+		
+		b++;
 	}
 }
 
- 
-
 /***********************/
+
