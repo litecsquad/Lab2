@@ -584,6 +584,8 @@ void game (void)
 	int led = random(0);
 	while (b<9)
 	{
+	int blink = random(1);
+	int led = random(0);
 		if (led == 0)
         {
             game_sequence[b][0] = 0;
