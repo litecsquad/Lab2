@@ -2,8 +2,6 @@
     Section: 4
     Date: 2/1/2019
     File name: LAB 2
-    Description:
-		This program demonstrates ###################
 */
 
 #include <c8051_SDCC.h> //include files. This file is available online
@@ -76,8 +74,11 @@ void main(void)
  
     while (1)
     {
-        printf("\r\nBrief description of game\r\n");
-        printf("Start\r\n");
+        printf("\r\nThis game has three modes; you can select a mode by moving the slide switchies\r\n");
+        printf("\rIn Mode 1, the LEDS will light up in a random sequence, and you must match the sequence by pressing the corresponding pushbuttons. \r\n")
+	printf("\rIn Mode 2, your partner will chose the sequence that the LEDs light up in, and then you must match it by pressing the corresponding pushbuttons.\r\n")
+	printf("\rIn Mode 3, you can use the potentiometer to set the blink rate and the delay time between blinks.\r\n"
+	printf("Start\r\n");
     
         //ensure initial conditions of LEDS and BILED
         TurnOff();
@@ -156,6 +157,10 @@ void main(void)
                     {
                         LED0 = 0;
                     }
+		    if (!PB0) //break out of this loop if PB0 is pressed
+		    {
+		    	break;
+		    }
                 }
                 blink_counts = blink_counts;
                 counts = 0;
@@ -173,6 +178,10 @@ void main(void)
                     {
                         LED0 = 0;
                     }
+		    if (!PB0) //break out of this loop if PB0 is pressed
+		    {
+		    	break;
+		    }
                 }
                 delay_counts = delay_counts;
                 
