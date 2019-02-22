@@ -160,7 +160,7 @@ void main(void)
         }
             //delay ?
         /***********MODE 1***********/
-		else if (mode == 1) //enact mode 1 for 8 turns
+else if (mode == 1) //enact mode 1 for 8 turns
 		{
 			while(1)
 			{
@@ -176,11 +176,12 @@ void main(void)
 						LED2 = 1;
 						while (i < 9) // Begin a 8 turn  long loop
 						{
+							printf("We are on turn %u!", i);
 							index = 0; 
 							LED1 = 1;
 							while (index <= i) // From zero to turn
 							{
-								printf('Time to blink");
+								printf("Time to blink");
 								if (game_sequence[index][0] == 0) 
 								{
 									blink_LED(0,game_sequence[index][1]);
@@ -212,7 +213,7 @@ void main(void)
 							{
 								TR0 = 0;
 								TR0 = 1;
-								TMR0  0;
+								TMR0 = 0;
 								counts = 0;
 						
 							
@@ -301,7 +302,7 @@ void main(void)
 											blink_counter++;
 										}
 									}
-										printf("Time's Up!\r\n");
+										printf("Time is Up!\r\n");
 										TR0 = 0;
 										TR0 = 1;
 										TMR0 = 0;
@@ -312,7 +313,7 @@ void main(void)
 											LED2 = 1;
 											LED3 = 1;
 											printf("yes\r\n");
-						                while(counts <= 1000);wait
+						                while(counts <= 1000);
 										TurnOff();
 										scorer = 0;
 										while(scorer <= index)
@@ -326,9 +327,9 @@ void main(void)
 												TMR0 = 0;
 												counts = 0;
 												while(counts <= 337){}
-												BILED0 = 0 
+												BILED0 = 0; 
 											}
-											else if
+											else
 											{
 												BILED1 = 1;
 												TR0 = 0;
@@ -361,12 +362,12 @@ void main(void)
 								index++;
 
 							}
-								printf('"Resetting Responce Sequence");
+								printf("Resetting Responce Sequence");
 
-								for (x = 0; x < 8; ++x)
+								for (x = 0; x < 8; x++)
 								{
 									//responce[x] = 0;
-									for (j = 0; j<2; ++j)
+									for (j = 0; j<2; j++)
 									{
 										responce[x][j] = 0;
 									}
