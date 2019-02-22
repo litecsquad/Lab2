@@ -170,15 +170,18 @@ void main(void)
 					score = 0;
 					TurnOff();
 					game();
-					if (!PB0)
+					if (!PB0) // If you press a button
 					{
 						printf("Loooooooooooooooool\r\n");
-						while (i < 9)
+						LED2 = 1;
+						while (i < 9) // Begin a 8 turn  long loop
 						{
-						index = 0;
-							while (index <= i)
+							index = 0; 
+							LED1 = 1;
+							while (index <= i) // From zero to turn
 							{
-								if (game_sequence[index][0] == 0)
+								printf('Time to blink");
+								if (game_sequence[index][0] == 0) 
 								{
 									blink_LED(0,game_sequence[index][1]);
 								}
@@ -198,69 +201,118 @@ void main(void)
 									blink_LED(3,game_sequence[index][1]);
 								}
 
-								index ++;
+								index ++; // Add to index
 
 								BILED0 = 1;
 
 							}
 							index = 0;
 
-							while (index <= i)
+							while (index <= i) // From zero to your current turn
 							{
+								TR0 = 0;
+								TR0 = 1;
+								TMR0  0;
 								counts = 0;
 						
-							//responce = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
-								for (x = 0; x < 8; ++x)
-									{
-										//responce[x] = 0;
-										for (j = 0; j<2; ++j)
-										{
-											responce[x][j] = 0;
-										}
-
-
-									}
-								if (!PB0 || !PB1 || !PB2 || !PB3)
+							
+								printf("Time for you to push some buttons! Press any button to start. Match the %u sequence\r\n", index);
+								while (PB0 && PB1 && PB2 && PB3);
+								if (!PB0 || !PB1 || !PB2 || !PB3) // If you press any push buttons
 								{
-								blink_counter = 0;
-									while (blink_counter <= game_sequence[index][1])
+									blink_counter = 0;
+									printf("Blink number  = %u", game_sequence[index][1]);
+									
+									
+									while (blink_counter <= game_sequence[index][1]) // Start loop from the amount of blinks needed
 									{
+										TR0 = 0;
+										TR0 = 1;
+										TMR0 = 0;
 										counts = 0;
-										while (counts <= 667)
+										printf("Press a button once");
+										while (counts <= 2500)
 										{
 											if (!PB0)
 											{
+											bouncer = counts;
+											current_counts = counts;
+											while(current_counts <= 500)
+											{
+											
+											current_counts = counts - bouncer;
+
+											}
 											responce[index][0] = 0;
 											responce[index][1] += 1;
+											printf("LED %u | Blinks %u",responce[index][0], responce[index][1]);
+											}
+											
+											else if (!PB1)
+											{
+											bouncer = counts;
+											current_counts = counts;
+											while(current_counts <= 500)
+											{
+											
+											current_counts = counts - bouncer;
 
 											}
-											if (!PB1)
-											{
 											responce[index][0] = 1;
 											responce[index][1] += 1;
+											printf("LED %u | Blinks %u",responce[index][0], responce[index][1]);
+											
 
 											}
-											if (!PB2)
+											else if (!PB2)
 											{
+
+											bouncer = counts;
+											current_counts = counts;
+											while(current_counts <= 500)
+											{
+											
+											current_counts = counts - bouncer;
+
+											}
+
 											responce[index][0] = 2;
 											responce[index][1] += 1;
+											printf("LED %u | Blinks %u",responce[index][0], responce[index][1]);
 
 											}
-											if (!PB3)
+											else if (!PB3)
 											{
+
+											bouncer = counts;
+											current_counts = counts;
+											while(current_counts <= 500)
+											{
+											
+											current_counts = counts - bouncer;
+
+											}
+
 											responce[index][0] = 3;
 											responce[index][1] += 1;
+											printf("LED %u | Blinks %u",responce[index][0], responce[index][1]);
 
 											}
+											blink_counter++;
 										}
+									}
+										printf("Time's Up!\r\n");
+										TR0 = 0;
+										TR0 = 1;
+										TMR0 = 0;
 										counts = 0;
-										while(counts <= 337)
-										{
+										printf("no\r\n");
 											LED0 = 1;
 											LED1 = 1;
 											LED2 = 1;
 											LED3 = 1;
-										}
+											printf("yes\r\n");
+						                while(counts <= 1000);wait
 										TurnOff();
 										scorer = 0;
 										while(scorer <= index)
@@ -268,24 +320,35 @@ void main(void)
 											if ((game_sequence[index][0] == responce[index][0]) && (game_sequence[index][1] == responce[index][1]))
 											{
 												score ++;
+												BILED0 = 1;
+												TR0 = 0;
+												TR0 = 1;
+												TMR0 = 0;
+												counts = 0;
+												while(counts <= 337){}
+												BILED0 = 0 
 											}
-											else
+											else if
 											{
 												BILED1 = 1;
+												TR0 = 0;
+												TR0 = 1;
+												TMR0 = 0;
 												counts = 0;
 												while( counts <= 337 )
 												{}
 												BILED1 = 0;
 											}
+											printf("Your score is %u!",score);
 
 										scorer ++;
 										}
 
 
-										blink_counter ++;
+										
 								
 								
-									}
+									
 						
 									
 									
@@ -295,12 +358,27 @@ void main(void)
 							
 
 								}
+								index++;
 
 							}
-							printf("Your score is %d /r/n", score);
+								printf('"Resetting Responce Sequence");
+
+								for (x = 0; x < 8; ++x)
+								{
+									//responce[x] = 0;
+									for (j = 0; j<2; ++j)
+									{
+										responce[x][j] = 0;
+									}
+
+
+								}
+							
+							i++;
 
 
 						}
+						printf("Your score is %d /r/n", score);
 						printf("Do you want to play again? y if yes, n if no /r/n");
 						answer = getchar('');
 						if (answer == 110)
@@ -310,7 +388,6 @@ void main(void)
 					}  
 				}
 			}
-            
             /***********MODE 2***********/
             if (mode == 2) //enact mode 2 for 8 turns
             {
