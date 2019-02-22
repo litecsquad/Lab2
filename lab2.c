@@ -397,18 +397,23 @@ else if (mode == 1) //enact mode 1 for 8 turns
             } //end mode 2
             
             /***********MODE 3***********/
-            if (mode == 3) //enact mode 3 for 8 turns
+            /***********MODE 3***********/
+            else if (mode == 3) //enact mode 3 for 8 turns
             {
                 printf("Mode 3:\r\n\rset the blink frequency by adjusting the potentiometer. When finished, press pushbutton0\r\n\rthen, set the delay period by adjusting the potentiometer.\r\n\r");
                 TurnOff();
                 counts = 0;
-                while (1) //set blink rate
+				//blink_counts = 1200;
+				//delay_counts = 1200;
+
+				//blink_LED(2, 3);
+				//blink_LED(1, 3);
+                while (PB0) //set blink rate
 	
                 {
-					printf("%d", read_AD_input(1));
-					
+					//printf("%d\r\n", read_AD_input(1));
                     blink_counts = read_and_scale(1, 0.05, 1.0); //convert blink period from 0.05 to 1.0 seconds
-					printf("%d", blink_counts);
+					//printf("%d\r\n", blink_counts);
                     while (counts <= blink_counts/2) //on for half of blink time
                     {
                         LED0 = 1;
@@ -420,22 +425,28 @@ else if (mode == 1) //enact mode 1 for 8 turns
                     }
 					if (!PB0)
 					{
-						break;
+						printf("!PB0");
+						//break;
 					}
                 }
                 blink_counts = blink_counts;
                 counts = 0;
+				
+				//printf("out1");
+				while (PB0){}
+				current_counts = counts;
+				while(counts <= (current_counts + 120));
 
-    
                 while (PB0) //set delay time
                 {
+					//printf("in delay loop");
                     delay_counts = read_and_scale(1, 1, 8); //convert delay period from 1.0 to 8.0 seconds
-                    while (counts <= 169) //LED on for 0.5 seconds
+                    while (counts <= 337) //LED on for 0.5 seconds
                     {
                         LED0 = 1;
                     }
                     
-                    while (counts <= 169 + delay_counts) //led off for delay period
+                    while (counts <= 337 + delay_counts) //led off for delay period
                     {
                         LED0 = 0;
                     }
@@ -443,6 +454,7 @@ else if (mode == 1) //enact mode 1 for 8 turns
                 delay_counts = delay_counts;
                 
                 blink_LED(LED0, 4);
+		TurnOff();
                    
             } //end mode 3
         }
@@ -525,7 +537,7 @@ int read_and_scale(int n, unsigned char low, unsigned char high)
 {
     unsigned char AD = read_AD_input(n);
     unsigned char V = AD*2.4/256;
-    unsigned char counts = ((((high - low)*V/2.4) + low) * 337);
+    unsigned char counts = (((((high - low)*V/2.4) + low)) * 337);
     return counts;
 }
 
