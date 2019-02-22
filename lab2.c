@@ -453,7 +453,7 @@ else if (mode == 1) //enact mode 1 for 8 turns
                 }
                 delay_counts = delay_counts;
                 
-                blink_LED(LED0, 4);
+                blink_LED(0, 4);
 		TurnOff();
                    
             } //end mode 3
